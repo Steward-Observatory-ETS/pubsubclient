@@ -500,7 +500,7 @@ boolean PubSubClient::publish_P(const char* topic, const uint8_t* payload, unsig
     unsigned int i;
     uint8_t header;
     unsigned int len;
-    int expectedLength;
+    unsigned int expectedLength;
 
     if (!connected()) {
         return false;
@@ -630,7 +630,7 @@ boolean PubSubClient::subscribe(const char* topic, uint8_t qos) {
     if (qos > 1) {
         return false;
     }
-    if (this->bufferSize < 9 + topicLength) {
+    if (this->bufferSize < 10 + topicLength) {
         // Too long
         return false;
     }
@@ -655,7 +655,7 @@ boolean PubSubClient::unsubscribe(const char* topic) {
     if (topic == 0) {
         return false;
     }
-    if (this->bufferSize < 9 + topicLength) {
+    if (this->bufferSize < 10 + topicLength) {
         // Too long
         return false;
     }
