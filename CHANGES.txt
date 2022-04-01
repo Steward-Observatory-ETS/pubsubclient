@@ -1,3 +1,12 @@
+2.8.1-SO-ETS
+   * Fork to https://github.com/Steward-Observatory-ETS/pubsubclient.git
+   * Added connect() overloads that take a binary Will message together
+     with length.
+   * Long topics not handled correctly by subscribe() and unsubscribe().
+   * Added unit tests for new connect() overloads.
+   * Added unit test for long topic passed to unsubscribe().
+   * Fixed some compiler warnings.
+
 2.8
    * Add setBufferSize() to override MQTT_MAX_PACKET_SIZE
    * Add setKeepAlive() to override MQTT_KEEPALIVE

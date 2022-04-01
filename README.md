@@ -3,6 +3,9 @@
 This library provides a client for doing simple publish/subscribe messaging with
 a server that supports MQTT.
 
+**Note:** This fork of the upstream PubSubClient library adds support for binary
+Will messages and fixes several minor issues.
+
 ## Examples
 
 The library comes with a number of example sketches. See File > Examples > PubSubClient
