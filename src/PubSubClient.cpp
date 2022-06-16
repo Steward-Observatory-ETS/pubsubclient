@@ -8,6 +8,10 @@
 #include "PubSubClient.h"
 #include "Arduino.h"
 
+#ifndef MQTT_MAX_TRANSFER_SIZE
+    #define MQTT_MAX_TRANSFER_SIZE  0
+#endif
+
 PubSubClient::PubSubClient() {
     this->_state = MQTT_DISCONNECTED;
     this->_client = NULL;
@@ -15,6 +19,7 @@ PubSubClient::PubSubClient() {
     setCallback(NULL);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -25,6 +30,7 @@ PubSubClient::PubSubClient(Client& client) {
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -36,6 +42,7 @@ PubSubClient::PubSubClient(IPAddress addr, uint16_t port, Client& client) {
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -46,6 +53,7 @@ PubSubClient::PubSubClient(IPAddress addr, uint16_t port, Client& client, Stream
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -57,6 +65,7 @@ PubSubClient::PubSubClient(IPAddress addr, uint16_t port, MQTT_CALLBACK_SIGNATUR
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -68,6 +77,7 @@ PubSubClient::PubSubClient(IPAddress addr, uint16_t port, MQTT_CALLBACK_SIGNATUR
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -79,6 +89,7 @@ PubSubClient::PubSubClient(uint8_t *ip, uint16_t port, Client& client) {
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -89,6 +100,7 @@ PubSubClient::PubSubClient(uint8_t *ip, uint16_t port, Client& client, Stream& s
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -100,6 +112,7 @@ PubSubClient::PubSubClient(uint8_t *ip, uint16_t port, MQTT_CALLBACK_SIGNATURE, 
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -111,6 +124,7 @@ PubSubClient::PubSubClient(uint8_t *ip, uint16_t port, MQTT_CALLBACK_SIGNATURE, 
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -122,6 +136,7 @@ PubSubClient::PubSubClient(const char* domain, uint16_t port, Client& client) {
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -132,6 +147,7 @@ PubSubClient::PubSubClient(const char* domain, uint16_t port, Client& client, St
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -143,6 +159,7 @@ PubSubClient::PubSubClient(const char* domain, uint16_t port, MQTT_CALLBACK_SIGN
     this->stream = NULL;
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -154,6 +171,7 @@ PubSubClient::PubSubClient(const char* domain, uint16_t port, MQTT_CALLBACK_SIGN
     setStream(stream);
     this->bufferSize = 0;
     setBufferSize(MQTT_MAX_PACKET_SIZE);
+    setMaxTransferSize(MQTT_MAX_TRANSFER_SIZE);
     setKeepAlive(MQTT_KEEPALIVE);
     setSocketTimeout(MQTT_SOCKET_TIMEOUT);
 }
@@ -598,24 +616,24 @@ boolean PubSubClient::write(uint8_t header, uint8_t* buf, uint16_t length) {
     uint16_t rc;
     uint8_t hlen = buildHeader(header, buf, length);
 
-#ifdef MQTT_MAX_TRANSFER_SIZE
-    uint8_t* writeBuf = buf+(MQTT_MAX_HEADER_SIZE-hlen);
-    uint16_t bytesRemaining = length+hlen;  //Match the length type
-    uint8_t bytesToWrite;
-    boolean result = true;
-    while((bytesRemaining > 0) && result) {
-        bytesToWrite = (bytesRemaining > MQTT_MAX_TRANSFER_SIZE)?MQTT_MAX_TRANSFER_SIZE:bytesRemaining;
-        rc = _client->write(writeBuf,bytesToWrite);
-        result = (rc == bytesToWrite);
-        bytesRemaining -= rc;
-        writeBuf += rc;
+    if (this->maxTransferSize > 0) {
+        uint8_t* writeBuf = buf+(MQTT_MAX_HEADER_SIZE-hlen);
+        uint16_t bytesRemaining = length+hlen;  //Match the length type
+        uint8_t bytesToWrite;
+        boolean result = true;
+        while((bytesRemaining > 0) && result) {
+            bytesToWrite = (bytesRemaining > this->maxTransferSize)?this->maxTransferSize:bytesRemaining;
+            rc = _client->write(writeBuf,bytesToWrite);
+            result = (rc == bytesToWrite);
+            bytesRemaining -= rc;
+            writeBuf += rc;
+        }
+        return result;
+    } else {
+        rc = _client->write(buf+(MQTT_MAX_HEADER_SIZE-hlen),length+hlen);
+        lastOutActivity = millis();
+        return (rc == hlen+length);
     }
-    return result;
-#else
-    rc = _client->write(buf+(MQTT_MAX_HEADER_SIZE-hlen),length+hlen);
-    lastOutActivity = millis();
-    return (rc == hlen+length);
-#endif
 }
 
 boolean PubSubClient::subscribe(const char* topic) {
@@ -775,6 +793,15 @@ boolean PubSubClient::setBufferSize(uint16_t size) {
 uint16_t PubSubClient::getBufferSize() {
     return this->bufferSize;
 }
+
+void PubSubClient::setMaxTransferSize(uint16_t size) {
+    this->maxTransferSize = size;
+}
+
+uint16_t PubSubClient::getMaxTransferSize() {
+    return this->maxTransferSize;
+}
+
 PubSubClient& PubSubClient::setKeepAlive(uint16_t keepAlive) {
     this->keepAlive = keepAlive;
     return *this;
