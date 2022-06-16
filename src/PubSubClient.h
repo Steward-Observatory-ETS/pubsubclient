@@ -39,7 +39,7 @@
 // MQTT_MAX_TRANSFER_SIZE : limit how much data is passed to the network client
 //  in each write call. Needed for the Arduino Wifi Shield. Leave undefined to
 //  pass the entire MQTT packet in each write call.
-//#define MQTT_MAX_TRANSFER_SIZE 80
+#define MQTT_MAX_TRANSFER_SIZE 80
 
 // Possible values for client.state()
 #define MQTT_CONNECTION_TIMEOUT     -4
